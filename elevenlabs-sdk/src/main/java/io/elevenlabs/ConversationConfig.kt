@@ -56,7 +56,8 @@ data class ConversationConfig(
     val onAgentToolResponse: ((toolName: String, toolCallId: String, toolType: String, isError: Boolean) -> Unit)? = null,
     val onConversationInitiationMetadata: ((conversationId: String, agentOutputFormat: String, userInputFormat: String) -> Unit)? = null,
     val onInterruption: ((eventId: Int) -> Unit)? = null,
-    val onDisconnect: ((details: DisconnectionDetails) -> Unit)? = null
+    val onDisconnect: ((details: DisconnectionDetails) -> Unit)? = null,
+    val onError: ((code: Int, message: String?) -> Unit)? = null
 
 ) {
     init {

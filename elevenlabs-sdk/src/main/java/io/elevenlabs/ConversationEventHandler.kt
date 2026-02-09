@@ -29,7 +29,8 @@ class ConversationEventHandler(
     private val onAgentToolResponse: ((String, String, String, Boolean) -> Unit)? = null,
     private val onConversationInitiationMetadata: ((String, String, String) -> Unit)? = null,
     private val onInterruption: ((Int) -> Unit)? = null,
-    private val onEndCall: (suspend () -> Unit)? = null
+    private val onEndCall: (suspend () -> Unit)? = null,
+    private val onError: ((Int, String?) -> Unit)? = null
 ) {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
@@ -67,6 +68,7 @@ class ConversationEventHandler(
                 is ConversationEvent.Audio -> handleAudio(event)
                 is ConversationEvent.ConversationInitiationMetadata -> handleConversationInitiationMetadata(event)
                 is ConversationEvent.Interruption -> handleInterruption(event)
+                is ConversationEvent.ServerError -> handleServerError(event)
 
             }
         } catch (e: Exception) {
@@ -211,6 +213,18 @@ class ConversationEventHandler(
             onInterruption?.invoke(event.eventId)
         } catch (e: Exception) {
             Log.e("ConvEventHandler", "Error in onInterruption callback: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Handle server error events
+     */
+    private fun handleServerError(event: ConversationEvent.ServerError) {
+        Log.e("ConvEventHandler", "Server error (${event.code}): ${event.message ?: "unknown"}")
+        try {
+            onError?.invoke(event.code, event.message)
+        } catch (e: Exception) {
+            Log.e("ConvEventHandler", "Error in onError callback: ${e.message}", e)
         }
     }
 

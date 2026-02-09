@@ -48,6 +48,7 @@ object ConversationEventParser {
                 "interruption" -> parseInterruption(jsonObject)
                 "audio_alignment" -> parseAudioAlignment(jsonObject)
                 "ping" -> parsePing(jsonObject)
+                "error" -> parseError(jsonObject)
                 else -> {
                     handleParsingError(json, IllegalArgumentException("Unknown event type: $eventType"))
                     null
@@ -311,6 +312,22 @@ object ConversationEventParser {
             userTranscript = text,
             eventId = eventId
         )
+    }
+
+    /**
+     * Parse error event from server
+     * Supports both nested error_event and flat structure:
+     * {"type":"error","error_event":{"code":1011,"message":"..."}}
+     * {"type":"error","code":1011,"message":"..."}
+     */
+    private fun parseError(jsonObject: JsonObject): ConversationEvent.ServerError {
+        val errorEvent = jsonObject.getAsJsonObject("error_event")
+        val code = errorEvent?.get("code")?.asInt
+            ?: jsonObject.get("code")?.asInt
+            ?: 1011
+        val message = errorEvent?.get("message")?.let { if (it.isJsonNull) null else it.asString }
+            ?: jsonObject.get("message")?.let { if (it.isJsonNull) null else it.asString }
+        return ConversationEvent.ServerError(code = code, message = message)
     }
 
     /**

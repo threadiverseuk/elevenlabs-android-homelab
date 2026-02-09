@@ -65,7 +65,7 @@ class ConversationViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch {
             try {
                 val config = io.elevenlabs.ConversationConfig(
-                    agentId = "<your-agent-id>", // Replace with your agent ID
+                    agentId = "agent_1101k8vj0989fpmbc8jxfmmq17s1", // Your agent ID
                     conversationToken = null,
                     userId = "demo-user",
                     textOnly = false,
@@ -141,6 +141,10 @@ class ConversationViewModel(application: Application) : AndroidViewModel(applica
                     },
                     onInterruption = { eventId ->
                         Log.d("ConversationViewModel", "onInterruption: eventId=$eventId")
+                    },
+                    onError = { code, message ->
+                        Log.e("ConversationViewModel", "onError: Server error ($code): ${message ?: "unknown"}")
+                        _errorMessage.postValue("Server error ($code): ${message ?: "unknown"}")
                     }
                 )
 
