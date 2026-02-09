@@ -1,6 +1,6 @@
-## ElevenLabs Conversational AI SDK for Android (Kotlin)
+## ElevenAgents SDK for Android (Kotlin)
 
-Official ElevenLabs Conversational SDK for Android.
+Official ElevenAgents SDK for Android.
 
 ### Features
 
@@ -40,7 +40,7 @@ dependencyResolutionManagement {
 ### app/build.gradle.kts
 ```kotlin
 dependencies {
-    // ElevenLabs Conversational AI SDK (Android)
+    // ElevenAgents SDK (Android)
     implementation("io.elevenlabs:elevenlabs-android:<latest>")
 
     // Kotlin coroutines, AndroidX, etc., as needed by your app
