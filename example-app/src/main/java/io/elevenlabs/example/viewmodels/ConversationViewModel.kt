@@ -141,6 +141,10 @@ class ConversationViewModel(application: Application) : AndroidViewModel(applica
                     },
                     onInterruption = { eventId ->
                         Log.d("ConversationViewModel", "onInterruption: eventId=$eventId")
+                    },
+                    onError = { code, message ->
+                        Log.e("ConversationViewModel", "onError: Server error ($code): ${message ?: "unknown"}")
+                        _errorMessage.postValue("Server error ($code): ${message ?: "unknown"}")
                     }
                 )
 

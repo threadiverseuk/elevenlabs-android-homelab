@@ -75,6 +75,9 @@ internal class ConversationSessionImpl(
         },
         onEndCall = {
             endSession()
+        },
+        onError = { code, message ->
+            try { config.onError?.invoke(code, message) } catch (_: Throwable) {}
         }
     )
 

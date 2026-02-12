@@ -158,4 +158,15 @@ sealed class ConversationEvent {
         val eventId: Int
     ) : ConversationEvent()
 
+    /**
+     * Event representing a server error
+     *
+     * @param code The error code from the server
+     * @param message Optional error message describing the error
+     */
+    data class ServerError(
+        val code: Int,
+        val message: String?
+    ) : ConversationEvent()
+
 }
