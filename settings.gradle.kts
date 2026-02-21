@@ -20,6 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ElevenLabs Conversational AI SDK"
-include(":elevenlabs-sdk")
+rootProject.name = "ElevenLabs Conversational AI Demo"
 include(":example-app")
