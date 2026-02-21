@@ -26,6 +26,13 @@ export interface FaceCatalogItem {
   name: string;
   previewImagePath: string;
   description: string;
+  riveFilePath: string;
+  artboardName?: string;
+  stateMachineName: string;
+  inputs: {
+    mode: string;
+    talkLevel?: string;
+  };
 }
 
 export interface VoiceCatalogItem {
