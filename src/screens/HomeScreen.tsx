@@ -5,6 +5,7 @@ import { SettingsDrawer } from '@/components/SettingsDrawer';
 import { audioService } from '@/services/audioService';
 import { elevenLabsService } from '@/services/elevenLabsService';
 import { useAppStore } from '@/store/useAppStore';
+import { normalizeFaceId } from '@/utils/faces';
 
 export function HomeScreen() {
   const { profiles, activeProfileId, assistant, setAssistantStatus, setDrawerOpen, addToast } = useAppStore();
@@ -14,6 +15,7 @@ export function HomeScreen() {
     () => profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0],
     [profiles, activeProfileId]
   );
+  const activeFaceId = normalizeFaceId(activeProfile?.faceId ?? 'rotom');
 
   const runAssistantCycle = async () => {
     if (!activeProfile) {
@@ -59,7 +61,7 @@ export function HomeScreen() {
       <SettingsDrawer />
 
       <section className="mt-2 flex flex-col items-center gap-6">
-        <AssistantFace faceId={activeProfile?.faceId ?? 'rotom-classic'} status={assistant.status} />
+        <AssistantFace faceId={activeFaceId} state={assistant.status} />
         <MicButton disabled={busy} isActive={assistant.status === 'listening'} onClick={() => void runAssistantCycle()} />
       </section>
     </main>
