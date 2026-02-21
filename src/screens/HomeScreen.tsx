@@ -59,7 +59,7 @@ export function HomeScreen() {
       <SettingsDrawer />
 
       <section className="mt-2 flex flex-col items-center gap-6">
-        <AssistantFace faceId={activeProfile?.faceId ?? 'rotom-classic'} status={assistant.status} />
+        <AssistantFace faceId={activeProfile?.faceId ?? 'rotom-classic'} state={assistant.status} />
         <MicButton disabled={busy} isActive={assistant.status === 'listening'} onClick={() => void runAssistantCycle()} />
       </section>
     </main>

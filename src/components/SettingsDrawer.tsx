@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { faceCatalog } from '@/assets/faces/catalog';
 import { useAppStore } from '@/store/useAppStore';
 
 export function SettingsDrawer() {
@@ -14,6 +15,8 @@ export function SettingsDrawer() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   if (!activeProfile) return null;
+
+  const activeFace = faceCatalog.find((face) => face.id === activeProfile.faceId);
 
   const updateField = async (field: 'apiKey' | 'agentId' | 'voiceId' | 'baseUrl', value: string) => {
     await saveProfile({ ...activeProfile, config: { ...activeProfile.config, [field]: value } });
@@ -52,6 +55,13 @@ export function SettingsDrawer() {
               </option>
             ))}
           </select>
+          <div className="rounded border border-sky-300/20 bg-rotom-bg/60 p-2 text-sm">
+            <p className="text-slate-300">Selected face</p>
+            <p className="font-medium text-sky-100">{activeFace?.name ?? activeProfile.faceId}</p>
+            <Link className="text-xs text-sky-200 underline" onClick={() => setDrawerOpen(false)} to="/profiles">
+              Change in Profiles
+            </Link>
+          </div>
           <Link className="inline-block text-sm text-sky-200 underline" onClick={() => setDrawerOpen(false)} to="/profiles">
             Manage Profiles
           </Link>

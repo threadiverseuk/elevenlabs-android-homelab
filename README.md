@@ -116,3 +116,37 @@ Update `src/services/elevenLabsService.ts`:
 - `testConnection`
 
 These methods already define the shape of config and responses for future production wiring.
+
+## Rive Assistant Faces
+
+The home screen uses `AssistantFace` (`src/components/AssistantFace.tsx`) to render a face selected by each profile. Faces are defined in `src/assets/faces/catalog.ts` and mapped to Rive state-machine inputs.
+
+### Add a New Face
+
+1. Drop your `.riv` file in `src/assets/faces/rive/`.
+2. Add a new entry in `src/assets/faces/catalog.ts` with:
+   - `riveFilePath`
+   - `artboardName` (optional)
+   - `stateMachineName` (required)
+   - `inputs` mapping (at minimum `mode`)
+3. Add a preview image path for profile selection tiles.
+4. Select the face from **Profiles** to attach it to a profile.
+
+### Expected State Machine Input Contract
+
+Preferred unified contract for all faces:
+- Number input `mode`
+  - `0 = idle`
+  - `1 = listening`
+  - `2 = thinking`
+  - `3 = speaking`
+  - `4 = error`
+
+Optional:
+- Number input `talkLevel` (`0..1`) for future audio amplitude lip-sync.
+
+### Rive Design Tips
+
+- Keep one state machine contract across faces so the app does not need per-face logic.
+- Design smooth transitions between idle/listening/thinking/speaking to handle rapid status changes.
+- If using one shared `.riv`, expose each face as a separate artboard and map `artboardName` in catalog entries.
