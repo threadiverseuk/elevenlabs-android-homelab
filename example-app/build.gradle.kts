@@ -41,7 +41,7 @@ applicationId = "io.elevenlabs.example"
 
 dependencies {
     // ElevenLabs SDK
-    implementation(project(":elevenlabs-sdk"))
+    implementation("io.elevenlabs:elevenlabs-android:0.7.2")
 
     // AndroidX Core
     implementation(libs.androidx.core.ktx)
