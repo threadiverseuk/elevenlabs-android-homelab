@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { faceCatalog } from '@/assets/faces/catalog';
 import { useAppStore } from '@/store/useAppStore';
+
+const maskValue = (value: string): string => (value ? '•'.repeat(Math.max(value.length, 8)) : 'Not set');
 
 export function SettingsDrawer() {
   const { profiles, activeProfileId, ui, setDrawerOpen, setActiveProfileId, saveProfile, testConnectionForProfile } =
@@ -15,7 +18,9 @@ export function SettingsDrawer() {
 
   if (!activeProfile) return null;
 
-  const updateField = async (field: 'apiKey' | 'agentId' | 'voiceId' | 'baseUrl', value: string) => {
+  const activeFace = faceCatalog.find((face) => face.id === activeProfile.faceId);
+
+  const updateField = async (field: 'apiKey' | 'agentId', value: string) => {
     await saveProfile({ ...activeProfile, config: { ...activeProfile.config, [field]: value } });
   };
 
@@ -23,7 +28,6 @@ export function SettingsDrawer() {
     const nextErrors: Record<string, string> = {};
     if (!activeProfile.config.apiKey.trim()) nextErrors.apiKey = 'API key is required.';
     if (!activeProfile.config.agentId.trim()) nextErrors.agentId = 'Agent ID is required.';
-    if (!activeProfile.config.voiceId.trim()) nextErrors.voiceId = 'Voice ID is required.';
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -52,32 +56,47 @@ export function SettingsDrawer() {
               </option>
             ))}
           </select>
+          <div className="rounded border border-sky-300/20 bg-rotom-bg/60 p-2 text-sm">
+            <p className="text-slate-300">Selected face</p>
+            <p className="font-medium text-sky-100">{activeFace?.name ?? activeProfile.faceId}</p>
+            <Link className="text-xs text-sky-200 underline" onClick={() => setDrawerOpen(false)} to="/profiles">
+              Change in Profiles
+            </Link>
+          </div>
           <Link className="inline-block text-sm text-sky-200 underline" onClick={() => setDrawerOpen(false)} to="/profiles">
             Manage Profiles
           </Link>
         </section>
 
         <section className="mt-4 space-y-3 rounded-lg border border-sky-300/20 bg-white/5 p-3">
-          <h3 className="font-medium">ElevenLabs Config</h3>
-          <p className="text-xs text-amber-300">Store API keys only on this device. No cloud sync is implemented.</p>
-          {[
-            ['apiKey', 'API Key'],
-            ['agentId', 'Agent ID'],
-            ['voiceId', 'Voice ID'],
-            ['baseUrl', 'Base URL (Optional)'],
-          ].map(([field, label]) => (
-            <label className="block text-sm" key={field}>
-              {label}
-              <input
-                className="mt-1 w-full rounded border border-sky-300/30 bg-rotom-bg p-2"
-                onBlur={validate}
-                onChange={(event) => void updateField(field as never, event.target.value)}
-                type={field === 'apiKey' ? 'password' : 'text'}
-                value={activeProfile.config[field as keyof typeof activeProfile.config] ?? ''}
-              />
-              {errors[field] && <span className="text-xs text-red-300">{errors[field]}</span>}
-            </label>
-          ))}
+          <h3 className="font-medium">ElevenLabs Agent Credentials</h3>
+          <p className="text-xs text-amber-300">Saved values are masked after you type them.</p>
+
+          <label className="block text-sm">
+            API Key
+            <input
+              className="mt-1 w-full rounded border border-sky-300/30 bg-rotom-bg p-2"
+              onBlur={validate}
+              onChange={(event) => void updateField('apiKey', event.target.value)}
+              type="password"
+              value={activeProfile.config.apiKey}
+            />
+            <span className="text-xs text-slate-300">Saved: {maskValue(activeProfile.config.apiKey)}</span>
+            {errors.apiKey && <span className="block text-xs text-red-300">{errors.apiKey}</span>}
+          </label>
+
+          <label className="block text-sm">
+            Agent ID
+            <input
+              className="mt-1 w-full rounded border border-sky-300/30 bg-rotom-bg p-2"
+              onBlur={validate}
+              onChange={(event) => void updateField('agentId', event.target.value)}
+              type="password"
+              value={activeProfile.config.agentId}
+            />
+            <span className="text-xs text-slate-300">Saved: {maskValue(activeProfile.config.agentId)}</span>
+            {errors.agentId && <span className="block text-xs text-red-300">{errors.agentId}</span>}
+          </label>
 
           <button
             className="rounded bg-sky-500 px-3 py-2 text-sm font-medium"
